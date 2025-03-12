@@ -44,19 +44,6 @@ export function congruencialMultiplicativo(a, m, x0, n) {
   return { sequence, period, normalizedValues };
 }
 
-function detectPeriod(sequence) {
-  let seen = new Map();
-
-  for (let i = 0; i < sequence.length; i++) {
-    if (seen.has(sequence[i])) {
-      return i - seen.get(sequence[i]); // Se encontró la repetición, calcular período
-    }
-    seen.set(sequence[i], i);
-  }
-
-  return null;
-}
-
 export function validateMixto(a, c, m, x0) {
   let errors = [];
 
@@ -81,7 +68,6 @@ export function validateMultiplicativo(a, m, x0) {
 
   //relativamente primo
   if (gcd(x0, m) !== 1) {
-    // throw new Error('La semilla debe ser coprima con M.');
     errors.push('x0 debe ser relativamente primo a m.');
   }
 
@@ -193,18 +179,8 @@ export function blumBlumShub(p, q, x0, n) {
   let x = x0 % M;
   let sequence = [];
   let normalizedValues = [];
-
-  //   for (let i = 0; i < n; i++) {
-  //     x = (x * x) % M;
-  //     sequence.push(x);
-  //     normalizedValues.push(x / M);
-  //   }
-
-  //   let period = detectPeriod(sequence);
-
-  //   return { sequence, period, normalizedValues };
-  // }
   let seen = new Set();
+
   for (let i = 0; i < n; i++) {
     x = (x * x) % M;
 
