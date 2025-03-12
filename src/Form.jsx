@@ -90,7 +90,7 @@ export default function Form({ option, dispatch }) {
         </div>
       ))}
 
-      <Button text="Generar" onClick={handleSubmit} />
+      <Button text="Generar" onClick={handleSubmit} type={'submit'} />
       <Button text="Volver" onClick={() => dispatch({ type: 'reset' })} />
     </form>
   );

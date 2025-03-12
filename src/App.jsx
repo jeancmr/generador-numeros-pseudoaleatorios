@@ -1,4 +1,5 @@
 import { useReducer } from 'react';
+import * as XLSX from 'xlsx';
 import Form from './Form';
 import {
   congruencialMixto,
@@ -8,6 +9,7 @@ import {
   blumBlumShub,
 } from './utils';
 import MethodSelection from './MethodSelection';
+import Button from './Button';
 
 const initialState = {
   sequence: [],
@@ -80,10 +82,21 @@ export default function App() {
   const { sequence, period, option, options } = state;
   const method = options.find((o) => o.value === option);
 
+  const downloadExcel = () => {
+    if (!state.normalizedValues || state.normalizedValues.length === 0) return;
+    const data = state.normalizedValues.map((value) => ({
+      valores: Number(value.toFixed(4)),
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+    XLSX.writeFile(wb, 'numeros_normalizados.xlsx');
+  };
+
   return (
     <div className="p-8 bg-gray-900 min-h-screen text-white">
       <h1 className="text-2xl font-bold mb-4">
-        Generador de Números Aleatorios {method ? `(${method.name})` : ''}
+        Generador de Números Pseudoaleatorios {method ? `(${method.name})` : ''}
       </h1>
 
       {option ? (
@@ -122,6 +135,8 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {sequence.length > 0 && <Button text="Bajar datos" onClick={downloadExcel} />}
     </div>
   );
 }

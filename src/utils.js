@@ -1,17 +1,22 @@
-// utils.js
-
 export function congruencialMixto(a, c, m, x0, n) {
   let sequence = [];
   let x = x0;
   let normalizedValues = [];
+  let seen = new Set();
 
   for (let i = 0; i < n; i++) {
     x = (a * x + c) % m;
+
+    if (seen.has(x)) {
+      break;
+    }
+
+    seen.add(x);
     sequence.push(x);
-    normalizedValues.push(x / m); // Normalización
+    normalizedValues.push(x / m);
   }
 
-  let period = detectPeriod(sequence);
+  let period = sequence.length;
 
   return { sequence, period, normalizedValues };
 }
@@ -20,14 +25,21 @@ export function congruencialMultiplicativo(a, m, x0, n) {
   let sequence = [];
   let x = x0;
   let normalizedValues = [];
+  let seen = new Set();
 
   for (let i = 0; i < n; i++) {
     x = (a * x) % m;
+
+    if (seen.has(x)) {
+      break;
+    }
+
+    seen.add(x);
     sequence.push(x);
-    normalizedValues.push(x / m); // Normalización
+    normalizedValues.push(x / m);
   }
 
-  let period = detectPeriod(sequence);
+  let period = sequence.length;
 
   return { sequence, period, normalizedValues };
 }
@@ -63,10 +75,9 @@ export function validateMultiplicativo(a, m, x0) {
   if (x0 % 2 === 0) {
     errors.push('x0 debe ser un número impar.');
   }
-
-  // if (!isRelativelyPrime(x0, m)) {
-  //   errors.push('x0 debe ser relativamente primo a m.');
-  // }
+  if (x0 < 1) {
+    errors.push('x0 debe ser un número mayor a 0');
+  }
 
   //relativamente primo
   if (gcd(x0, m) !== 1) {
@@ -145,14 +156,22 @@ export function congruencialCuadratico(a, b, c, m, x0, n) {
   let sequence = [];
   let x = x0;
   let normalizedValues = [];
+  let seen = new Set();
 
   for (let i = 0; i < n; i++) {
     x = (a * x * x + b * x + c) % m;
+
     sequence.push(x);
     normalizedValues.push(x / (m - 1));
+
+    if (seen.has(x)) {
+      break;
+    }
+
+    seen.add(x);
   }
 
-  let period = detectPeriod(sequence);
+  let period = sequence.length - 1;
 
   return { sequence, period, normalizedValues };
 }
@@ -175,13 +194,31 @@ export function blumBlumShub(p, q, x0, n) {
   let sequence = [];
   let normalizedValues = [];
 
+  //   for (let i = 0; i < n; i++) {
+  //     x = (x * x) % M;
+  //     sequence.push(x);
+  //     normalizedValues.push(x / M);
+  //   }
+
+  //   let period = detectPeriod(sequence);
+
+  //   return { sequence, period, normalizedValues };
+  // }
+  let seen = new Set();
   for (let i = 0; i < n; i++) {
     x = (x * x) % M;
+
     sequence.push(x);
     normalizedValues.push(x / M);
+
+    if (seen.has(x)) {
+      break;
+    }
+
+    seen.add(x);
   }
 
-  let period = detectPeriod(sequence);
+  let period = sequence.length - 1;
 
   return { sequence, period, normalizedValues };
 }
